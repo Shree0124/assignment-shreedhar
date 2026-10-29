@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../core/router/app_router.dart';
 import '../../../../core/widgets/app_messenger.dart';
+import '../../../../core/widgets/app_dropdown.dart';
 import '../../../../core/widgets/custom_button.dart';
 import '../../../../core/widgets/custom_text_field.dart';
 import '../../../../core/widgets/error_state_widget.dart';
@@ -125,8 +126,14 @@ class _VisitorFormState extends ConsumerState<_VisitorForm> {
         autovalidateMode: AutovalidateMode.onUserInteraction,
         child: ListView(
           keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
           children: [
+            Text(
+              editing ? 'Update the pass details' : 'Create a visitor pass',
+              style: Theme.of(context).textTheme.bodyMedium
+                  ?.copyWith(color: const Color(0xFF5E6A66)),
+            ),
+            const SizedBox(height: 16),
             if (editing)
               Align(
                 alignment: Alignment.centerLeft,
@@ -173,25 +180,27 @@ class _VisitorFormState extends ConsumerState<_VisitorForm> {
               validator: VisitorValidators.email,
             ),
             const SizedBox(height: 12),
-            DropdownButtonFormField<String>(
-              initialValue: _optionOrNull(VisitorOptions.types, _visitorType),
-              decoration: const InputDecoration(labelText: 'Visitor type'),
+            AppDropdown<String>(
+              label: 'Visitor type',
+              icon: Icons.badge_outlined,
+              value: _optionOrNull(VisitorOptions.types, _visitorType),
               items: [
                 for (final type in VisitorOptions.types)
-                  DropdownMenuItem(value: type, child: Text(type)),
+                  AppDropdownOption(value: type, label: type),
               ],
-              onChanged: (value) => _visitorType = value,
+              onChanged: (value) => setState(() => _visitorType = value),
               validator: VisitorValidators.visitorType,
             ),
             const SizedBox(height: 12),
-            DropdownButtonFormField<String>(
-              initialValue: _optionOrNull(VisitorOptions.projects, _project),
-              decoration: const InputDecoration(labelText: 'Project'),
+            AppDropdown<String>(
+              label: 'Project',
+              icon: Icons.apartment_outlined,
+              value: _optionOrNull(VisitorOptions.projects, _project),
               items: [
                 for (final project in VisitorOptions.projects)
-                  DropdownMenuItem(value: project, child: Text(project)),
+                  AppDropdownOption(value: project, label: project),
               ],
-              onChanged: (value) => _project = value,
+              onChanged: (value) => setState(() => _project = value),
               validator: VisitorValidators.project,
             ),
             const SizedBox(height: 12),

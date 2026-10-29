@@ -61,4 +61,32 @@ void main() {
     expect(checkedIn.map((visitor) => visitor.id), ['2']);
     expect(all.map((visitor) => visitor.id), ['2', '1', '3']);
   });
+
+  test('keeps previous days unless a day is selected', () {
+    final today = DateTime(2026, 10, 30, 15);
+    final onToday = filterVisitors(
+      visitors,
+      query: '',
+      status: null,
+      project: null,
+      day: today,
+    );
+    final previousDay = filterVisitors(
+      visitors,
+      query: '',
+      status: null,
+      project: null,
+      day: DateTime(2026, 10, 29),
+    );
+    final groups = groupVisitorsByDay(
+      filterVisitors(visitors, query: '', status: null, project: null),
+    );
+
+    expect(onToday.map((visitor) => visitor.id), ['2', '1']);
+    expect(previousDay.map((visitor) => visitor.id), ['3']);
+    expect(groups.map((group) => group.visitors.first.id), ['2', '3']);
+    expect(groups.last.day, DateTime(2026, 10, 29));
+    expect(registrationCountsByDay(visitors)[DateTime(2026, 10, 30)], 2);
+    expect(registrationCountsByDay(visitors)[DateTime(2026, 10, 29)], 1);
+  });
 }

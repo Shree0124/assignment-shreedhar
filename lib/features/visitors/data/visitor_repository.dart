@@ -87,37 +87,46 @@ class VisitorRepository {
   }
 
   Future<Visitor> checkIn(Visitor visitor, DateTime time) {
-    return _patchStatus(
-      visitor,
-      status: VisitorStatus.checkedIn,
-      fields: {'check_in_time': formatLocalIso(time)},
+    return update(
+      Visitor(
+        id: visitor.id,
+        name: visitor.name,
+        mobile: visitor.mobile,
+        email: visitor.email,
+        visitorType: visitor.visitorType,
+        project: visitor.project,
+        purpose: visitor.purpose,
+        status: VisitorStatus.checkedIn,
+        createdAt: visitor.createdAt,
+        checkInTime: time,
+        checkOutTime: visitor.checkOutTime,
+      ),
     );
   }
 
   Future<Visitor> checkOut(Visitor visitor, DateTime time) {
-    return _patchStatus(
-      visitor,
-      status: VisitorStatus.checkedOut,
-      fields: {'check_out_time': formatLocalIso(time)},
+    return update(
+      Visitor(
+        id: visitor.id,
+        name: visitor.name,
+        mobile: visitor.mobile,
+        email: visitor.email,
+        visitorType: visitor.visitorType,
+        project: visitor.project,
+        purpose: visitor.purpose,
+        status: VisitorStatus.checkedOut,
+        createdAt: visitor.createdAt,
+        checkInTime: visitor.checkInTime,
+        checkOutTime: time,
+      ),
     );
   }
 
-  Future<Visitor> _patchStatus(
-    Visitor visitor, {
-    required VisitorStatus status,
-    required Map<String, String> fields,
-  }) {
-    _ensureConfigured();
-    return guardApi(() async {
-      final response = await _dio.patch<dynamic>(
-        _visitorPath(visitor.id),
-        data: {'status': status.label, ...fields},
-      );
-      return _readVisitor(response.data, fallback: visitor);
-    });
-  }
-
   Visitor _readVisitor(Object? data, {Visitor? fallback}) {
+    if (data == null || (data is String && data.trim().isEmpty)) {
+      if (fallback != null) return fallback;
+    }
+
     final parsed = Visitor.tryFromJson(data);
     if (parsed != null) return parsed;
 

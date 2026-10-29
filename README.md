@@ -17,33 +17,19 @@ There is no custom backend. Visitor records live in a mock REST API so they surv
 ## Setup
 
 1. Install Flutter and connect an Android device, or start an emulator. QR scanning needs a camera, so a physical phone is the reliable option.
-2. Create a free project at [MockAPI.io](https://mockapi.io).
-3. Add a resource named `visitors` with these fields:
+2. The app already points at a shared CrudCrud resource:
 
-| Field | Type |
-| --- | --- |
-| name | string |
-| mobile | string |
-| email | string |
-| visitor_type | string |
-| project | string |
-| purpose | string |
-| status | string |
-| created_at | string |
-| check_in_time | string |
-| check_out_time | string |
+   `https://crudcrud.com/api/c21a2bccad2f47c182433093c92a54dd`
 
-MockAPI generates `id` itself. The app uses that id inside the QR code.
+   Sample visitors are already stored there. The server id is the `_id` field, and that value is what the QR code contains.
 
-4. Put the resource root URL in [`lib/core/config/api_config.dart`](lib/core/config/api_config.dart). It should look like `https://xxxx.mockapi.io/api/v1` and should not end with `/visitors`.
-
-   Or pass it at build time:
+3. To use your own endpoint, open [crudcrud.com](https://crudcrud.com/), copy the generated root (do not append `/visitors`), and either replace the URL in [`lib/core/config/api_config.dart`](lib/core/config/api_config.dart) or run:
 
    ```bash
-   flutter run --dart-define=API_BASE_URL=https://xxxx.mockapi.io/api/v1
+   flutter run --dart-define=API_BASE_URL=https://crudcrud.com/api/your-id
    ```
 
-5. From this folder:
+4. From this folder:
 
    ```bash
    flutter pub get
@@ -73,8 +59,7 @@ Visit transitions live in `VisitRules`, which has no Flutter imports, so the rul
 | GET | `/visitors` | Load the list |
 | GET | `/visitors/{id}` | Look up a scanned id |
 | POST | `/visitors` | Register. Status is `Registered`. `created_at` is the device time. |
-| PUT | `/visitors/{id}` | Edit name, contact, project, and purpose. Status and times stay as they are. |
-| PATCH | `/visitors/{id}` | Check-in or check-out (`status` plus the matching timestamp) |
+| PUT | `/visitors/{id}` | Edit visitor details, and save check-in or check-out |
 | DELETE | `/visitors/{id}` | Delete after confirmation |
 
 Sample record:
@@ -127,7 +112,7 @@ The installable file is `build/app/outputs/flutter-apk/app-release.apk`. The rel
 Build with the API URL baked in:
 
 ```bash
-flutter build apk --release --dart-define=API_BASE_URL=https://xxxx.mockapi.io/api/v1
+flutter build apk --release --dart-define=API_BASE_URL=https://crudcrud.com/api/your-id
 ```
 
 ## Limitations
@@ -137,3 +122,4 @@ flutter build apk --release --dart-define=API_BASE_URL=https://xxxx.mockapi.io/a
 - Android only.
 - The camera turns off when you leave the Scan tab. Scanning still needs a device with a camera.
 - Dark mode, offline cache, and visit history are not included.
+- The demo API is a CrudCrud sandbox. It stores records with `_id`, and it accepts PUT rather than PATCH. A fresh sandbox can be empty until visitors are registered.

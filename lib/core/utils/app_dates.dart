@@ -40,6 +40,22 @@ String formatLocalIso(DateTime dateTime) {
   return '${date}T$time$sign$hours:$minutes';
 }
 
+String relativeDayLabel(DateTime day, DateTime now) {
+  if (isSameLocalDay(day, now)) return 'Today';
+  final yesterday = DateTime(
+    now.year,
+    now.month,
+    now.day,
+  ).subtract(const Duration(days: 1));
+  if (isSameLocalDay(day, yesterday)) return 'Yesterday';
+  return formatDisplayDate(day);
+}
+
+String formatMonthYear(DateTime dateTime) {
+  final local = dateTime.toLocal();
+  return '${_months[local.month - 1]} ${local.year}';
+}
+
 String formatDisplayDate(DateTime dateTime) {
   final local = dateTime.toLocal();
   return '${local.day} ${_months[local.month - 1]} ${local.year}';

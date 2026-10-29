@@ -149,13 +149,28 @@ class VisitorProjectFilter extends Notifier<String?> {
 final visitorProjectFilterProvider =
     NotifierProvider<VisitorProjectFilter, String?>(VisitorProjectFilter.new);
 
+class VisitorDayFilter extends Notifier<DateTime> {
+  @override
+  DateTime build() => DateTime.now();
+
+  void select(DateTime day) => state = day;
+}
+
+final visitorDayFilterProvider = NotifierProvider<VisitorDayFilter, DateTime>(
+  VisitorDayFilter.new,
+);
+
 final filteredVisitorsProvider = Provider<List<Visitor>>((ref) {
   final visitors = ref.watch(visitorsProvider).value ?? const <Visitor>[];
+  final query = ref.watch(visitorSearchQueryProvider);
   return filterVisitors(
     visitors,
-    query: ref.watch(visitorSearchQueryProvider),
+    query: query,
     status: ref.watch(visitorStatusFilterProvider),
     project: ref.watch(visitorProjectFilterProvider),
+    // A name search looks across every day. An empty search stays on the day
+    // chosen in the calendar.
+    day: query.trim().isEmpty ? ref.watch(visitorDayFilterProvider) : null,
   );
 });
 

@@ -22,6 +22,20 @@ void main() {
     });
 
     expect(visitor.id, 'VIS001');
+    expect(
+      Visitor.fromJson({
+        '_id': '6ae3afa9f29a2303e89f9999',
+        'id': 'ignore-this',
+        'name': 'Rahul Sharma',
+        'mobile': '9876543210',
+        'visitor_type': 'Customer',
+        'project': 'Project A',
+        'purpose': 'Site Visit',
+        'status': 'Registered',
+        'created_at': '2026-10-30T02:10:00+05:30',
+      }).id,
+      '6ae3afa9f29a2303e89f9999',
+    );
     expect(visitor.status, VisitorStatus.registered);
     expect(visitor.email, 'rahul@example.com');
     expect(visitor.checkInTime, isNull);

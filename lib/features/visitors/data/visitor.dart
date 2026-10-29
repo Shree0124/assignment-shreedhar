@@ -102,7 +102,7 @@ class Visitor {
     }
 
     return Visitor(
-      id: _required(json, const ['id']),
+      id: _required(json, const ['_id', 'id']),
       name: _required(json, const ['name']),
       mobile: _required(json, const [
         'mobile',

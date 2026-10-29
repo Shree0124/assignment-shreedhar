@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../../core/theme/app_theme.dart';
 import '../../data/visitor.dart';
 import 'status_chip.dart';
 
@@ -20,26 +21,60 @@ class VisitorCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final color = statusColor(visitor.status);
     return Card(
       child: InkWell(
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(20),
         onTap: onTap,
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(16, 12, 4, 12),
+          padding: const EdgeInsets.fromLTRB(14, 14, 8, 14),
           child: Row(
             children: [
+              Container(
+                width: 48,
+                height: 48,
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  color: color.withValues(alpha: 0.12),
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                child: Text(
+                  _initials(visitor.name),
+                  style: TextStyle(
+                    color: color,
+                    fontWeight: FontWeight.w800,
+                    fontSize: 16,
+                  ),
+                ),
+              ),
+              const SizedBox(width: 12),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(visitor.name, style: theme.textTheme.titleMedium),
-                    const SizedBox(height: 4),
-                    Text(visitor.mobile, style: theme.textTheme.bodyMedium),
+                    Text(
+                      visitor.name,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: theme.textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.w700,
+                        color: AppTheme.ink,
+                      ),
+                    ),
                     const SizedBox(height: 2),
                     Text(
-                      '${visitor.project} · ${visitor.visitorType}',
+                      visitor.mobile,
                       style: theme.textTheme.bodyMedium?.copyWith(
-                        color: theme.colorScheme.onSurfaceVariant,
+                        color: const Color(0xFF5E6A66),
+                      ),
+                    ),
+                    const SizedBox(height: 6),
+                    Text(
+                      '${visitor.project} · ${visitor.visitorType}',
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: const Color(0xFF5E6A66),
                       ),
                     ),
                     const SizedBox(height: 8),
@@ -47,18 +82,25 @@ class VisitorCard extends StatelessWidget {
                   ],
                 ),
               ),
-              IconButton(
-                tooltip: 'Edit',
-                onPressed: onEdit,
-                icon: const Icon(Icons.edit_outlined),
-              ),
-              IconButton(
-                tooltip: 'Delete',
-                onPressed: onDelete,
-                icon: Icon(
-                  Icons.delete_outline,
-                  color: theme.colorScheme.error,
-                ),
+              Column(
+                children: [
+                  IconButton(
+                    tooltip: 'Edit',
+                    visualDensity: VisualDensity.compact,
+                    onPressed: onEdit,
+                    icon: const Icon(Icons.edit_outlined, size: 20),
+                  ),
+                  IconButton(
+                    tooltip: 'Delete',
+                    visualDensity: VisualDensity.compact,
+                    onPressed: onDelete,
+                    icon: Icon(
+                      Icons.delete_outline,
+                      size: 20,
+                      color: theme.colorScheme.error,
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
@@ -66,4 +108,16 @@ class VisitorCard extends StatelessWidget {
       ),
     );
   }
+}
+
+String _initials(String name) {
+  final parts = name
+      .trim()
+      .split(RegExp(r'\s+'))
+      .where((part) => part.isNotEmpty)
+      .toList();
+  if (parts.isEmpty) return '?';
+  String letter(String value) => value[0].toUpperCase();
+  if (parts.length == 1) return letter(parts.first);
+  return '${letter(parts.first)}${letter(parts.last)}';
 }

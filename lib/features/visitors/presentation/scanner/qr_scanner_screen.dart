@@ -10,6 +10,87 @@ import '../../../../core/widgets/empty_state_widget.dart';
 import '../../domain/visitor_validators.dart';
 import '../providers/visitor_providers.dart';
 
+class _ScanHint extends StatelessWidget {
+  const _ScanHint();
+
+  @override
+  Widget build(BuildContext context) {
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: const Color(0xCC142421),
+        borderRadius: BorderRadius.circular(14),
+      ),
+      child: const Padding(
+        padding: EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+        child: Text(
+          'Align the visitor pass inside the frame',
+          textAlign: TextAlign.center,
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
+        ),
+      ),
+    );
+  }
+}
+
+class _ScanFrame extends StatelessWidget {
+  const _ScanFrame();
+
+  @override
+  Widget build(BuildContext context) {
+    return const SizedBox(
+      width: 230,
+      height: 230,
+      child: Stack(
+        children: [
+          Positioned(top: 0, left: 0, child: _Corner(top: true, left: true)),
+          Positioned(top: 0, right: 0, child: _Corner(top: true, left: false)),
+          Positioned(
+            bottom: 0,
+            left: 0,
+            child: _Corner(top: false, left: true),
+          ),
+          Positioned(
+            bottom: 0,
+            right: 0,
+            child: _Corner(top: false, left: false),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _Corner extends StatelessWidget {
+  const _Corner({required this.top, required this.left});
+
+  final bool top;
+  final bool left;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 36,
+      height: 36,
+      decoration: BoxDecoration(
+        border: Border(
+          top: top
+              ? const BorderSide(color: Colors.white, width: 4)
+              : BorderSide.none,
+          bottom: top
+              ? BorderSide.none
+              : const BorderSide(color: Colors.white, width: 4),
+          left: left
+              ? const BorderSide(color: Colors.white, width: 4)
+              : BorderSide.none,
+          right: left
+              ? BorderSide.none
+              : const BorderSide(color: Colors.white, width: 4),
+        ),
+      ),
+    );
+  }
+}
+
 class QrScannerScreen extends StatelessWidget {
   const QrScannerScreen({super.key});
 
@@ -90,23 +171,12 @@ class _LiveScannerState extends ConsumerState<_LiveScanner> {
                         );
                       },
                     ),
-                    const IgnorePointer(
-                      child: Center(
-                        child: SizedBox(
-                          width: 220,
-                          height: 220,
-                          child: DecoratedBox(
-                            decoration: BoxDecoration(
-                              border: Border.fromBorderSide(
-                                BorderSide(color: Colors.white, width: 3),
-                              ),
-                              borderRadius: BorderRadius.all(
-                                Radius.circular(16),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
+                    const IgnorePointer(child: Center(child: _ScanFrame())),
+                    const Positioned(
+                      left: 16,
+                      right: 16,
+                      bottom: 16,
+                      child: _ScanHint(),
                     ),
                   ],
                 ),

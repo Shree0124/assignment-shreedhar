@@ -22,12 +22,20 @@ class StatusChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final color = statusColor(status);
-    return Chip(
-      visualDensity: VisualDensity.compact,
-      label: Text(status.label),
-      backgroundColor: color.withValues(alpha: 0.12),
-      side: BorderSide(color: color.withValues(alpha: 0.35)),
-      labelStyle: TextStyle(color: color, fontWeight: FontWeight.w600),
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.12),
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Text(
+        status.label,
+        style: TextStyle(
+          color: color,
+          fontSize: 12,
+          fontWeight: FontWeight.w700,
+        ),
+      ),
     );
   }
 }
